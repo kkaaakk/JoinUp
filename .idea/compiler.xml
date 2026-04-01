@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+      </profile>
+      <profile name="Annotation profile for JoinUp Parent" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$PROJECT_DIR$/../develop/apache-maven-3.6.1-bin/apache-maven-3.6.1/mvn_repo/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
+          <entry name="$PROJECT_DIR$/../develop/apache-maven-3.6.1-bin/apache-maven-3.6.1/mvn_repo/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$PROJECT_DIR$/../develop/apache-maven-3.6.1-bin/apache-maven-3.6.1/mvn_repo/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+          <entry name="$PROJECT_DIR$/../develop/apache-maven-3.6.1-bin/apache-maven-3.6.1/mvn_repo/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
+          <entry name="$PROJECT_DIR$/../develop/apache-maven-3.6.1-bin/apache-maven-3.6.1/mvn_repo/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$PROJECT_DIR$/../develop/apache-maven-3.6.1-bin/apache-maven-3.6.1/mvn_repo/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
+        </processorPath>
+        <module name="joinup-module-activity" />
+        <module name="joinup-module-credit" />
+        <module name="joinup-admin" />
+        <module name="joinup-common" />
+        <module name="joinup-infrastructure" />
+        <module name="joinup-module-signup" />
+        <module name="joinup-module-user" />
+        <module name="joinup-waitlist" />
+        <module name="joinup-app" />
+        <module name="joinup-notify" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="11" />
+  </component>
+</project>

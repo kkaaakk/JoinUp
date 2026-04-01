@@ -1,0 +1,36 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Maven / Java
+target/
+*/target/
+*.log
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven local cache in workspace
+.m2/
+
+# Build and reports
+out/
+logs/
+surefire-reports/
+failsafe-reports/
+
+# Environment
+.env
+.env.*
+
+# Runtime temp files
+*.pid
+*.seed
+*.tmp
+*.swp
