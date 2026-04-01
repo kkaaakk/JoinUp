@@ -1,0 +1,56 @@
+﻿server:
+  port: 8080
+
+spring:
+  application:
+    name: joinup
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/joinup?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 3000
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: joinup-default-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: assign_id
+
+knife4j:
+  enable: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: false
+
+joinup:
+  security:
+    jwt:
+      secret: CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_BYTES
+      expire-minutes: 120
+      issuer: joinup
