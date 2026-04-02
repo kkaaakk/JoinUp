@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 活动模块用户侧接口。
+ */
 @Validated
 @RestController
 @RequestMapping("/api/activity")

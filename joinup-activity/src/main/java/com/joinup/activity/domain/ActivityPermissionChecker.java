@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
+/**
+ * 活动模块权限校验器。
+ * 把“是否登录、是否发起者、是否管理员”从 service 中抽出来，便于后续替换成 RBAC。
+ */
 @Component
 public class ActivityPermissionChecker {
 

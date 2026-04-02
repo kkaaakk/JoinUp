@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 活动模块管理侧接口。
+ */
 @Validated
 @RestController
 @RequestMapping("/api/admin/activity")

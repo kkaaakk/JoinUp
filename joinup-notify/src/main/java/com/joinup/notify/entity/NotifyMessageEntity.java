@@ -1,4 +1,4 @@
-﻿package com.joinup.notify.entity;
+package com.joinup.notify.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * 通知消息实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("notify_message")

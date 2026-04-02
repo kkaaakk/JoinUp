@@ -1,2 +1,2 @@
-﻿package com.joinup.notify.controller;
+package com.joinup.notify.controller;
 

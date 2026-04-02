@@ -1,4 +1,4 @@
-﻿package com.joinup.user.entity;
+package com.joinup.user.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 
+/**
+ * 用户资料表实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("user_profile")

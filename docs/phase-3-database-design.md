@@ -1,4 +1,4 @@
-﻿# JoinUp 第3段：数据库设计与实体骨架
+# JoinUp 第3段：数据库设计与实体骨架
 
 ## 1. 建表 SQL
 - 文件位置：`joinup-infra/src/main/resources/sql/joinup_schema_v1.sql`

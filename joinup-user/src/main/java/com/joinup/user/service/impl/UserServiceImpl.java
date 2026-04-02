@@ -29,6 +29,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * 用户模块应用服务实现。
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -52,6 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserRegisterVO register(UserRegisterRequest request) {
+        // 注册时先统一做字段归一化，避免空串和首尾空格绕过唯一校验。
         String username = normalizeRequired(request.getUsername());
         String phone = normalizeNullable(request.getPhone());
         String email = normalizeNullable(request.getEmail());
@@ -72,6 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setCreditScore(100);
         userMapper.insert(user);
 
+        // 用户主表和资料表在同一事务内初始化，避免出现半成功状态。
         UserProfileEntity profile = new UserProfileEntity();
         profile.setUserId(user.getId());
         profile.setNickname(StringUtils.hasText(nickname) ? nickname : username);
@@ -103,6 +108,7 @@ public class UserServiceImpl implements UserService {
         userMapper.updateById(user);
 
         UserProfileEntity profile = findProfileByUserId(user.getId());
+        // Token 里只放当前鉴权需要的快照字段，避免泄露过多用户信息。
         LoginUser loginUser = LoginUser.builder()
                 .userId(user.getId())
                 .username(user.getUsername())
@@ -132,6 +138,7 @@ public class UserServiceImpl implements UserService {
         String phone = request.getPhone() == null ? user.getPhone() : normalizeNullable(request.getPhone());
         String email = request.getEmail() == null ? user.getEmail() : normalizeNullable(request.getEmail());
 
+        // 手机号、邮箱即使是更新场景也要排除自己后再做唯一性校验。
         validateUniqueFields(null, phone, email, currentUserId);
 
         user.setPhone(phone);
@@ -212,6 +219,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserEntity findByIdentifier(String identifier) {
+        // 登录入口支持用户名 / 手机号 / 邮箱三种标识，便于后面扩展账号体系。
         return userMapper.selectOne(Wrappers.<UserEntity>lambdaQuery()
                 .eq(UserEntity::getUsername, identifier)
                 .or()
@@ -302,6 +310,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private String normalizeNullable(String value) {
+        // 统一把空白串转换为 null，简化后续唯一索引和更新逻辑处理。
         if (!StringUtils.hasText(value)) {
             return null;
         }

@@ -1,4 +1,4 @@
-﻿# JoinUp Backend
+# JoinUp Backend
 
 ## 项目说明
 JoinUp（组个局）是面向校园和社区的线下临时活动组局平台后端。
@@ -140,3 +140,84 @@ JoinUp（组个局）是面向校园和社区的线下临时活动组局平台�
 - `docs/phase-5-activity-module.md`
 - `joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivityServiceImpl.java`
 - `joinup-activity/src/main/java/com/joinup/activity/domain/ActivityStatusFlow.java`
+补充约定：后续每一段业务交付默认同步补充必要代码注释，但补注释本身不单独占用新的段号。
+### 第6段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现 `joinup-signup` 高并发报名抢位模块，覆盖 Redis 名额缓存、Lua 原子扣减、幂等控制、Kafka 异步写库、报名结果查询与必要补偿。
+已完成项：
+1. `POST /api/signup/apply/{activityId}` 报名接口，正式名额不足时自动切候补逻辑
+2. `POST /api/signup/cancel/{activityId}` 取消接口骨架，异步取消并回补 Redis 名额
+3. `GET /api/signup/my` 与 `GET /api/signup/activity/{activityId}` 结果查询接口
+4. Redis Key 设计与活动快照缓存初始化
+5. `signup_apply.lua` 原子报名脚本与 `signup_compensate.lua` 补偿脚本
+6. Kafka 报名命令生产者、消费者与异步落库处理
+7. MySQL 报名表 / 候补表写入逻辑与数据库唯一约束兜底
+8. 不可恢复失败补偿、瞬时失败重试保留点与后续对账扩展说明
+
+影响模块：
+- `joinup-signup`
+- `joinup-common`
+- `joinup-waitlist`
+
+相关文件：
+- `docs/phase-6-signup-module.md`
+- `joinup-signup/src/main/java/com/joinup/signup/service/impl/SignupServiceImpl.java`
+- `joinup-signup/src/main/java/com/joinup/signup/domain/SignupActivityCacheService.java`
+- `joinup-signup/src/main/resources/lua/signup_apply.lua`
+### 第7段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现 `joinup-waitlist` 候补模块，打通“正式名额释放 -> 候补自动补位 -> 补位通知 -> 超时顺延”的闭环。
+已完成项：
+1. `joinup-waitlist` 模块的 Entity / Enum / Mapper / Service / Controller / Redis 队列服务 / 领域服务 / 事件监听 / 定时任务骨架
+2. 候补 Redis 结构设计落地：活动候补队列 ZSet、候补状态 Hash、全局补位超时 ZSet、活动级补位锁 Key
+3. 正式席位释放后按先到先得推进下一位候补，并使用 Redisson 锁避免并发补位冲突
+4. 候补补位提醒通知落表到 `notify_message`
+5. 候补补位超时扫描与顺延机制落地
+6. `joinup-signup` 与 `joinup-waitlist` 通过领域事件衔接：
+- `WaitlistJoinedEvent`
+- `WaitlistCanceledEvent`
+- `FormalSignupCanceledEvent`
+- `WaitlistPromotionOfferedEvent`
+- `WaitlistPromotionExpiredEvent`
+7. 报名模块已补齐候补补位占位 / 超时释放正式席位的联动逻辑
+
+影响模块：
+- `joinup-waitlist`
+- `joinup-signup`
+- `joinup-common`
+- `joinup-notify`
+- `joinup-boot`
+- `joinup-infra`
+
+相关文件：
+- `docs/phase-7-waitlist-module.md`
+- `joinup-waitlist/src/main/java/com/joinup/waitlist/domain/WaitlistPromotionDomainService.java`
+- `joinup-waitlist/src/main/java/com/joinup/waitlist/domain/WaitlistRedisQueueService.java`
+- `joinup-signup/src/main/java/com/joinup/signup/domain/WaitlistPromotionSignupCoordinator.java`
+- `joinup-infra/src/main/resources/sql/joinup_waitlist_phase7.sql`
+
+### 第8段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现活动报名截止后的自动成团 / 流局判定、状态日志写入、分布式锁调度控制以及事务后 Kafka 事件发送骨架。
+已完成项：
+1. `joinup-activity` 内新增成团 / 流局领域规则、状态日志领域服务、分布式锁服务、定时扫描任务、结算服务实现
+2. 定时扫描到报名截止时间已到且状态仍为 `SIGNUP_OPEN / FULL / WAITLIST_OPEN` 的活动
+3. 根据 `current_participants >= min_group_size` 自动判定 `GROUP_SUCCESS / GROUP_FAILED`
+4. 结算后统一写入 `activity_status_log`
+5. 使用 Redisson 全局扫描锁 + 活动级锁避免多实例重复执行
+6. 通过 `ActivitySettlementCompletedEvent` 在事务提交后发送 Kafka 结算结果事件
+7. 新增活动结算配置项与结算扫描查询方法
+
+影响模块：
+- `joinup-activity`
+- `joinup-common`
+- `joinup-boot`
+
+相关文件：
+- `docs/phase-8-activity-settlement.md`
+- `joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivitySettlementServiceImpl.java`
+- `joinup-activity/src/main/java/com/joinup/activity/scheduler/ActivitySettlementScheduler.java`
+- `joinup-common/src/main/java/com/joinup/common/event/activity/ActivitySettlementCompletedEvent.java`

@@ -1,21 +1,25 @@
-﻿server:
+server:
+  # 当前阶段默认单机运行，后续可通过 profile 覆盖端口。
   port: 8080
 
 spring:
   application:
     name: joinup
   datasource:
+    # 本地开发默认连接，部署环境请改为外部配置。
     url: jdbc:mysql://127.0.0.1:3306/joinup?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
+      # Redis 主要承接缓存、幂等和后续报名并发控制。
       host: 127.0.0.1
       port: 6379
       database: 0
       timeout: 3000
   kafka:
+    # Kafka 用于领域事件与异步通知，当前先保留基础生产/消费配置。
     bootstrap-servers: 127.0.0.1:9092
     producer:
       acks: all
@@ -29,11 +33,13 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 mybatis-plus:
+  # XML Mapper 目录先统一预留，后续复杂查询可直接落地。
   mapper-locations: classpath*:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
   global-config:
     db-config:
+      # deleted 字段统一走逻辑删除，避免业务代码各自约定。
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
@@ -51,6 +57,28 @@ springdoc:
 joinup:
   security:
     jwt:
+      # 生产环境必须替换为安全密钥，并通过环境变量或配置中心注入。
       secret: CHANGE_ME_TO_A_LONG_RANDOM_SECRET_WITH_AT_LEAST_32_BYTES
       expire-minutes: 120
       issuer: joinup
+  waitlist:
+    # 候补补位待确认时长，单位分钟。
+    confirm-minutes: 15
+    # 每轮超时扫描最多处理的记录数。
+    timeout-scan-batch-size: 50
+    # 活动候补页默认展示的队列人数。
+    queue-display-limit: 20
+    # 超时扫描固定延迟，单位毫秒。
+    timeout-scan-fixed-delay-ms: 5000
+  activity:
+    settlement:
+      # 每轮报名截止结算扫描的活动数量。
+      scan-batch-size: 50
+      # 报名截止结算扫描固定延迟，单位毫秒。
+      scan-fixed-delay-ms: 5000
+      # 获取全局扫描锁的等待时间，单位秒。
+      scan-lock-wait-seconds: 0
+      # 全局扫描锁自动释放时间，单位秒。
+      scan-lock-lease-seconds: 10
+      # 单个活动结算锁自动释放时间，单位秒。
+      activity-lock-lease-seconds: 10

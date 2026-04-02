@@ -12,6 +12,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * 编辑活动请求。
+ */
 @Data
 public class ActivityUpdateRequest {
 

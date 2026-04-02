@@ -7,12 +7,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
+/**
+ * 活动分页查询条件。
+ */
 @Data
 public class ActivityPageQuery {
 
+    /** 页码，从 1 开始。 */
     @Min(1)
     private long current = 1;
 
+    /** 单页大小，限制上限避免一次查太多。 */
     @Min(1)
     @Max(100)
     private long size = 10;

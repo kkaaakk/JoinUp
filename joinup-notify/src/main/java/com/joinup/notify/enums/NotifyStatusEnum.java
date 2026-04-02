@@ -1,8 +1,11 @@
-﻿package com.joinup.notify.enums;
+package com.joinup.notify.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 通知发送状态枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum NotifyStatusEnum {

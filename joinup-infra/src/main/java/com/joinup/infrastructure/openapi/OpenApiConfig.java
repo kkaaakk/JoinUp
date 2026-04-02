@@ -1,4 +1,4 @@
-﻿package com.joinup.infrastructure.openapi;
+package com.joinup.infrastructure.openapi;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -9,11 +9,15 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * OpenAPI / Knife4j 文档配置。
+ */
 @Configuration
 public class OpenApiConfig {
 
     @Bean
     public OpenAPI joinupOpenApi() {
+        // 统一声明 Bearer 鉴权方案，避免每个 controller 单独重复定义。
         String schemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()

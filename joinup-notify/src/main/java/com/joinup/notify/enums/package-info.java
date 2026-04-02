@@ -1,1 +1,1 @@
-﻿package com.joinup.notify.enums;
+package com.joinup.notify.enums;

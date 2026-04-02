@@ -1,8 +1,11 @@
-﻿package com.joinup.user.enums;
+package com.joinup.user.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 用户状态枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum UserStatusEnum {

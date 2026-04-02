@@ -1,4 +1,4 @@
-﻿package com.joinup.infrastructure.security;
+package com.joinup.infrastructure.security;
 
 import com.joinup.common.context.LoginUser;
 import io.jsonwebtoken.Claims;
@@ -12,6 +12,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 
+/**
+ * JWT 的生成、解析与校验工具。
+ */
 @Component
 public class JwtTokenProvider {
 
@@ -26,6 +29,7 @@ public class JwtTokenProvider {
     }
 
     public String createToken(LoginUser loginUser) {
+        // 登录态快照直接写入 claims，后续接口可少查一次用户表。
         Instant now = Instant.now();
         Instant expiry = now.plusSeconds(jwtProperties.getExpireMinutes() * 60);
         return Jwts.builder()
@@ -46,6 +50,7 @@ public class JwtTokenProvider {
     }
 
     public LoginUser parseLoginUser(String token) {
+        // 统一把 claims 转回 LoginUser，供过滤器和业务层直接使用。
         Claims claims = parseClaims(token);
         return LoginUser.builder()
                 .userId(Long.valueOf(claims.getSubject()))
@@ -61,6 +66,7 @@ public class JwtTokenProvider {
             parseClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException ex) {
+            // 这里不抛业务异常，让过滤器按未登录处理即可。
             return false;
         }
     }

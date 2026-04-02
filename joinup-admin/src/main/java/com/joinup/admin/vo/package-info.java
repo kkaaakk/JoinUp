@@ -1,2 +1,2 @@
-﻿package com.joinup.admin.vo;
+package com.joinup.admin.vo;
 

@@ -10,16 +10,22 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+/**
+ * 当前用户资料修改请求。
+ */
 @Data
 public class UserProfileUpdateRequest {
 
+    /** 昵称为必填，避免资料页出现空展示名。 */
     @NotBlank
     @Size(max = 64)
     private String nickname;
 
+    /** 允许前端按需更新手机号。 */
     @Pattern(regexp = "^1\\d{10}$", message = "phone format is invalid")
     private String phone;
 
+    /** 允许前端按需更新邮箱。 */
     @Email
     @Size(max = 128)
     private String email;
@@ -27,6 +33,7 @@ public class UserProfileUpdateRequest {
     @Size(max = 512)
     private String avatarUrl;
 
+    /** 取值见 GenderEnum。 */
     @Min(0)
     @Max(3)
     private Integer gender;

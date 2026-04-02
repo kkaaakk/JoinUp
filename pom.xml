@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -12,6 +12,7 @@
     <name>JoinUp Parent</name>
     <description>JoinUp modular monolith backend</description>
 
+    <!-- 模块化单体的聚合入口，业务模块统一从这里参与构建。 -->
     <modules>
         <module>joinup-common</module>
         <module>joinup-infra</module>
@@ -25,6 +26,7 @@
         <module>joinup-boot</module>
     </modules>
 
+    <!-- 统一依赖版本与编译基线，避免各模块自行漂移。 -->
     <properties>
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
@@ -38,6 +40,7 @@
         <jjwt.version>0.12.6</jjwt.version>
     </properties>
 
+    <!-- 仅做版本托管，具体依赖由子模块按需声明。 -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -96,6 +99,7 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- 插件统一管理，确保编译参数和 Java 版本在各模块保持一致。 -->
     <build>
         <pluginManagement>
             <plugins>
@@ -118,6 +122,27 @@
                             </path>
                         </annotationProcessorPaths>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.5.0</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-java-17</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireJavaVersion>
+                                        <version>[17,18)</version>
+                                        <message>JoinUp must be built with JDK 17.</message>
+                                    </requireJavaVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>

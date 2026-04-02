@@ -1,8 +1,11 @@
-﻿package com.joinup.signup.enums;
+package com.joinup.signup.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 报名状态枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum SignupStatusEnum {

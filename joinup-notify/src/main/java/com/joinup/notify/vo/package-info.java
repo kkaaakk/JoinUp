@@ -1,2 +1,2 @@
-﻿package com.joinup.notify.vo;
+package com.joinup.notify.vo;
 

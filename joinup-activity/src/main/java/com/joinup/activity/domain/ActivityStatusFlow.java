@@ -10,6 +10,10 @@ import java.util.Set;
 
 public final class ActivityStatusFlow {
 
+    /**
+     * 统一维护活动状态流转表。
+     * 业务判断尽量集中在这里，避免 controller / service 各自散落 if-else。
+     */
     private static final Map<ActivityStatusEnum, Set<ActivityStatusEnum>> ALLOWED_TRANSITIONS = Map.of(
             ActivityStatusEnum.DRAFT, EnumSet.of(ActivityStatusEnum.PENDING_REVIEW, ActivityStatusEnum.CANCELED),
             ActivityStatusEnum.PENDING_REVIEW, EnumSet.of(ActivityStatusEnum.DRAFT, ActivityStatusEnum.SIGNUP_OPEN, ActivityStatusEnum.CANCELED),
@@ -30,10 +34,12 @@ public final class ActivityStatusFlow {
     }
 
     public static ActivityStatusEnum initialStatus() {
+        // 当前产品约定：活动创建后先进入待审核。
         return ActivityStatusEnum.PENDING_REVIEW;
     }
 
     public static void assertCanEdit(ActivityStatusEnum status, Integer currentParticipants, Integer waitlistCount) {
+        // 已有报名或候补后再改活动，会让名额和补位规则变复杂，这里先明确禁止。
         if (status == ActivityStatusEnum.DRAFT || status == ActivityStatusEnum.PENDING_REVIEW) {
             return;
         }
@@ -52,6 +58,7 @@ public final class ActivityStatusFlow {
     }
 
     public static ActivityStatusEnum nextStatusOnReview(boolean approved) {
+        // 审核通过后直接开放报名；驳回则退回草稿给发起者修改。
         return approved ? ActivityStatusEnum.SIGNUP_OPEN : ActivityStatusEnum.DRAFT;
     }
 

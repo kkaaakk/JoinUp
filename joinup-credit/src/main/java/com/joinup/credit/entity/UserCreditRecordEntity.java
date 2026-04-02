@@ -1,4 +1,4 @@
-﻿package com.joinup.credit.entity;
+package com.joinup.credit.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -8,6 +8,9 @@ import com.joinup.common.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 用户信用变更记录实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("user_credit_record")
@@ -22,6 +25,7 @@ public class UserCreditRecordEntity extends BaseEntity {
     @TableField("change_type")
     private Integer changeType;
 
+    /** 本次变更分值，可正可负。 */
     @TableField("delta_score")
     private Integer deltaScore;
 

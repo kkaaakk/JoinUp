@@ -1,8 +1,11 @@
-﻿package com.joinup.activity.enums;
+package com.joinup.activity.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 活动状态枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum ActivityStatusEnum {
@@ -21,6 +24,7 @@ public enum ActivityStatusEnum {
     private final String description;
 
     public static ActivityStatusEnum fromCode(Integer code) {
+        // 统一从数据库状态码反查枚举，避免业务层散落 switch。
         for (ActivityStatusEnum value : values()) {
             if (value.code == code) {
                 return value;

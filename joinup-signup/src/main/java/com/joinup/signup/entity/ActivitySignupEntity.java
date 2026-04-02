@@ -1,4 +1,4 @@
-﻿package com.joinup.signup.entity;
+package com.joinup.signup.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -11,6 +11,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * 活动报名实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("activity_signup")
@@ -28,6 +31,7 @@ public class ActivitySignupEntity extends BaseEntity {
     @TableField("status")
     private Integer status;
 
+    /** 报名来源，区分直接报名与候补补位。 */
     @TableField("source")
     private Integer source;
 
@@ -41,6 +45,7 @@ public class ActivitySignupEntity extends BaseEntity {
     private String cancelReason;
 
     @Version
+    /** 乐观锁版本，预留给高并发报名场景。 */
     @TableField("version")
     private Integer version;
 }

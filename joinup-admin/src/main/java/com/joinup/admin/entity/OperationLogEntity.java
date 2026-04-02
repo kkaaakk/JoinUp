@@ -1,4 +1,4 @@
-﻿package com.joinup.admin.entity;
+package com.joinup.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * 操作日志实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("operation_log")

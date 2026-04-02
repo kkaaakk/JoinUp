@@ -1,4 +1,4 @@
-﻿package com.joinup.user.entity;
+package com.joinup.user.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -11,6 +11,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * 用户主表实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("`user`")
@@ -31,9 +34,11 @@ public class UserEntity extends BaseEntity {
     @TableField("password_hash")
     private String passwordHash;
 
+    /** 取值见 UserStatusEnum。 */
     @TableField("status")
     private Integer status;
 
+    /** 当前信用分，后续会被报名/爽约规则直接读取。 */
     @TableField("credit_score")
     private Integer creditScore;
 
@@ -41,6 +46,7 @@ public class UserEntity extends BaseEntity {
     private LocalDateTime lastLoginAt;
 
     @Version
+    /** 乐观锁版本，预留给信用分更新等并发写场景。 */
     @TableField("version")
     private Integer version;
 }

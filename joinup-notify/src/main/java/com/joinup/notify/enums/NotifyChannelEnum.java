@@ -1,8 +1,11 @@
-﻿package com.joinup.notify.enums;
+package com.joinup.notify.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 通知渠道枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum NotifyChannelEnum {

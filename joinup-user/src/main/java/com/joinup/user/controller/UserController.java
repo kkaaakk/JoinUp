@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 用户模块对外接口。
+ */
 @Validated
 @RestController
 @RequestMapping("/api/user")
@@ -60,6 +63,7 @@ public class UserController {
     }
 
     private Long currentUserId(LoginUser loginUser) {
+        // 认证过滤器已经把 LoginUser 放进上下文，这里统一兜底判空。
         if (loginUser == null || loginUser.getUserId() == null) {
             throw new BusinessException(ErrorCode.UNAUTHORIZED);
         }

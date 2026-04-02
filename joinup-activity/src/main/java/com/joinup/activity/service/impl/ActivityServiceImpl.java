@@ -38,6 +38,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * 活动模块应用服务实现。
+ */
 @Service
 public class ActivityServiceImpl implements ActivityService {
 
@@ -60,6 +63,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Transactional(rollbackFor = Exception.class)
     public ActivityDetailVO createActivity(LoginUser loginUser, ActivityCreateRequest request) {
         permissionChecker.assertLogin(loginUser);
+        // 创建和编辑走同一套参数校验，避免规则分叉。
         validateCreateOrUpdateRequest(request.getStartTime(), request.getEndTime(), request.getSignupDeadline(),
                 request.getMinGroupSize(), request.getMaxParticipants(), request.getAllowWaitlist(), request.getWaitlistLimit(),
                 request.getTags());
@@ -84,6 +88,7 @@ public class ActivityServiceImpl implements ActivityService {
         activity.setHeatScore(0);
         activityMapper.insert(activity);
 
+        // 标签和状态日志都放在一个事务里，确保活动创建后的快照完整。
         replaceTags(activity.getId(), request.getTags());
         insertStatusLog(activity.getId(), ActivityStatusEnum.DRAFT, ActivityStatusFlow.initialStatus(),
                 "Activity created and submitted for review", loginUser.getUserId());
@@ -101,6 +106,7 @@ public class ActivityServiceImpl implements ActivityService {
         ActivityEntity activity = getActivityOrThrow(activityId);
         permissionChecker.assertOrganizer(loginUser, activity);
         ActivityStatusEnum currentStatus = statusOf(activity.getStatus());
+        // 只允许在“可编辑窗口”内修改，避免影响已报名用户。
         ActivityStatusFlow.assertCanEdit(currentStatus, activity.getCurrentParticipants(), activity.getWaitlistCount());
         assertCapacityCanBeUpdated(activity, request.getMaxParticipants(), request.getAllowWaitlist(), request.getWaitlistLimit());
 
@@ -133,6 +139,7 @@ public class ActivityServiceImpl implements ActivityService {
         LambdaQueryWrapper<ActivityEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(ActivityEntity::getStartTime);
 
+        // 当前分页查询以简单组合条件为主，后续再按性能情况下沉 XML。
         if (query.getStatus() != null) {
             wrapper.eq(ActivityEntity::getStatus, query.getStatus());
         }
@@ -210,6 +217,7 @@ public class ActivityServiceImpl implements ActivityService {
         ActivityStatusEnum targetStatus = ActivityStatusFlow.nextStatusOnReview(Boolean.TRUE.equals(request.getApproved()));
         ActivityStatusFlow.assertTransition(currentStatus, targetStatus);
 
+        // reviewed_* 字段保留审核痕迹，方便后台追溯。
         activity.setStatus(targetStatus.getCode());
         activity.setReviewedBy(loginUser.getUserId());
         activity.setReviewedAt(LocalDateTime.now());
@@ -261,6 +269,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private void replaceTags(Long activityId, List<String> tagNames) {
+        // 当前用“删后重建”简化标签同步逻辑，后续如果标签量变大再做差量更新。
         activityTagMapper.delete(new LambdaQueryWrapper<ActivityTagEntity>()
                 .eq(ActivityTagEntity::getActivityId, activityId));
 
@@ -306,6 +315,7 @@ public class ActivityServiceImpl implements ActivityService {
                                  ActivityStatusEnum toStatus,
                                  String reason,
                                  Long operatorId) {
+        // 所有显式状态变更都记录日志，后面排查流转问题会轻松很多。
         ActivityStatusLogEntity logEntity = new ActivityStatusLogEntity();
         logEntity.setActivityId(activityId);
         logEntity.setFromStatus(fromStatus.getCode());
@@ -410,6 +420,7 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     private Integer resolveWaitlistLimit(Boolean allowWaitlist, Integer waitlistLimit) {
+        // 禁用候补时强制回落为 0，避免数据库里留下脏上限。
         return Boolean.TRUE.equals(allowWaitlist) ? waitlistLimit : 0;
     }
 

@@ -1,2 +1,2 @@
-﻿package com.joinup.waitlist.mapper;
+package com.joinup.waitlist.mapper;
 

@@ -1,4 +1,4 @@
-﻿package com.joinup.notify;
+package com.joinup.notify;
 
 public final class NotifyModuleMarker {
     private NotifyModuleMarker() {

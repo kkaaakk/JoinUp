@@ -1,4 +1,4 @@
-﻿package com.joinup.app;
+package com.joinup.app;
 
 import org.junit.jupiter.api.Test;
 

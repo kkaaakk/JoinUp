@@ -1,8 +1,11 @@
-﻿package com.joinup.admin.enums;
+package com.joinup.admin.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 操作结果枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum OperationResultEnum {

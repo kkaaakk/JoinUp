@@ -1,8 +1,11 @@
-﻿package com.joinup.credit.enums;
+package com.joinup.credit.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * 信用分变更类型枚举。
+ */
 @Getter
 @RequiredArgsConstructor
 public enum CreditChangeTypeEnum {
