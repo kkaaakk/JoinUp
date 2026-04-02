@@ -96,3 +96,25 @@ JoinUp（组个局）是面向校园和社区的线下临时活动组局平台�
 相关文件：
 - `joinup-infra/src/main/resources/sql/joinup_schema_v1.sql`
 - `docs/phase-3-database-design.md`
+
+### 第4段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现 `joinup-user` 模块的注册、登录、JWT 鉴权、个人资料与信用分接口。
+
+已完成项：
+1. `joinup-user` 的 DTO / VO / Mapper / Service / Controller
+2. 用户注册、登录、当前资料查询、资料修改、信用分查询
+3. 基于 JWT 的登录认证链路接入
+4. Spring Security 放行路径调整到 `/api/user/register` 与 `/api/user/login`
+5. 密码加密存储与用户状态校验
+
+影响模块：
+- `joinup-user`
+- `joinup-infra`
+- `joinup-common`
+
+相关文件：
+- `docs/phase-4-user-module.md`
+- `joinup-user/src/main/java/com/joinup/user/controller/UserController.java`
+- `joinup-user/src/main/java/com/joinup/user/service/impl/UserServiceImpl.java`

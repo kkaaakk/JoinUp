@@ -30,11 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader(SecurityConstants.AUTHORIZATION_HEADER);
-        if (authorization != null && authorization.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null
+                && authorization != null
+                && authorization.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             String token = authorization.substring(SecurityConstants.TOKEN_PREFIX.length());
             if (jwtTokenProvider.validateToken(token)) {
-                Long userId = jwtTokenProvider.parseUserId(token);
-                LoginUser loginUser = LoginUser.builder().userId(userId).build();
+                LoginUser loginUser = jwtTokenProvider.parseLoginUser(token);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 loginUser,
