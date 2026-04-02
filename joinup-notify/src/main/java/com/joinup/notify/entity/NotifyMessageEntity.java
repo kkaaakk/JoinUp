@@ -12,6 +12,10 @@ import java.time.LocalDateTime;
 
 /**
  * 通知消息实体。
+ * <p>
+ * 该实体统一承载站内信和未来可扩展的短信、邮件、小程序通知发送记录。
+ * 当前用户侧分页和已读接口主要面向 `IN_APP` 站内信渠道。
+ * </p>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

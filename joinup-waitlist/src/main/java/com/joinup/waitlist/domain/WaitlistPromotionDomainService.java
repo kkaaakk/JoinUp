@@ -273,7 +273,7 @@ public class WaitlistPromotionDomainService {
                                                            LocalDateTime confirmDeadline) {
         NotifyMessageEntity notifyMessage = new NotifyMessageEntity();
         notifyMessage.setUserId(entity.getUserId());
-        notifyMessage.setMessageType(NotifyMessageTypeEnum.WAITLIST_PROMOTION.getCode());
+        notifyMessage.setMessageType(NotifyMessageTypeEnum.WAITLIST_PROMOTED.getCode());
         notifyMessage.setChannel(NotifyChannelEnum.IN_APP.getCode());
         notifyMessage.setTitle("候补补位提醒");
         notifyMessage.setContent("你已获得活动《" + activity.getTitle() + "》的补位机会，请在 " + confirmDeadline + " 前确认。");

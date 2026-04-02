@@ -244,3 +244,26 @@ JoinUp（组个局）是面向校园和社区的线下临时活动组局平台�
 - `joinup-credit/src/main/java/com/joinup/credit/service/impl/CreditServiceImpl.java`
 - `joinup-credit/src/main/java/com/joinup/credit/domain/CreditRestrictionChecker.java`
 - `joinup-credit/src/main/java/com/joinup/credit/controller/CreditController.java`
+### 第10段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现 `joinup-notify` 通知模块，并补齐基于 Kafka 的事件驱动通知设计。
+已完成项：
+1. `notify_message` 对应的 Entity / Mapper / 状态枚举 / 渠道枚举 / 通知类型枚举
+2. 通知分页接口 `GET /api/notify/page`
+3. 通知已读接口 `POST /api/notify/read/{id}`
+4. `signup-created / signup-canceled / waitlist-promoted / activity-group-success / activity-group-failed / credit-changed / notify-send` Kafka 主题常量与事件载荷
+5. 上游业务事件消费者、统一通知发送命令生产者、通知发送命令消费者骨架
+6. 站内信落库逻辑与短信 / 邮件 / 小程序通知发送器预留接口
+7. 通知模块阶段文档 `docs/phase-10-notify-module.md`
+
+影响模块：
+- `joinup-notify`
+- `joinup-common`
+- `joinup-waitlist`（兼容旧通知枚举名引用）
+
+相关文件：
+- `docs/phase-10-notify-module.md`
+- `joinup-notify/src/main/java/com/joinup/notify/service/impl/NotifyServiceImpl.java`
+- `joinup-notify/src/main/java/com/joinup/notify/consumer/NotifyBusinessEventConsumer.java`
+- `joinup-notify/src/main/java/com/joinup/notify/producer/NotifySendEventProducer.java`

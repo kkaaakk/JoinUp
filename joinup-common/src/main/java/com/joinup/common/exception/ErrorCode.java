@@ -40,6 +40,9 @@ public enum ErrorCode {
     CREDIT_SCORE_TOO_LOW_FOR_ACTIVITY_CREATE(44001, "Credit score is too low for activity creation"),
     CREDIT_MANUAL_ADJUST_INVALID(44002, "Credit manual adjust request is invalid"),
     CREDIT_PERMISSION_DENIED(44003, "Credit operation permission denied"),
+    NOTIFY_MESSAGE_NOT_FOUND(45000, "Notify message not found"),
+    NOTIFY_CHANNEL_NOT_SUPPORTED(45001, "Notify channel is not supported"),
+    NOTIFY_EVENT_DISPATCH_FAILED(45002, "Notify event dispatch failed"),
     INTERNAL_ERROR(50000, "Internal server error");
 
     private final Integer code;
