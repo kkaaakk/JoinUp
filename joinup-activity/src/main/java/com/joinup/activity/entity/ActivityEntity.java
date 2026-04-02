@@ -58,14 +58,29 @@ public class ActivityEntity extends BaseEntity {
     @TableField("allow_waitlist")
     private Integer allowWaitlist;
 
+    @TableField("waitlist_limit")
+    private Integer waitlistLimit;
+
     @TableField("status")
     private Integer status;
+
+    @TableField("view_count")
+    private Long viewCount;
 
     @TableField("heat_score")
     private Integer heatScore;
 
     @TableField("cancel_reason")
     private String cancelReason;
+
+    @TableField("reviewed_by")
+    private Long reviewedBy;
+
+    @TableField("reviewed_at")
+    private LocalDateTime reviewedAt;
+
+    @TableField("review_remark")
+    private String reviewRemark;
 
     @Version
     @TableField("version")

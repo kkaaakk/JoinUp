@@ -64,9 +64,14 @@ CREATE TABLE IF NOT EXISTS `activity` (
     `current_participants` INT NOT NULL DEFAULT 0 COMMENT '当前确认人数',
     `waitlist_count` INT NOT NULL DEFAULT 0 COMMENT '候补人数',
     `allow_waitlist` TINYINT NOT NULL DEFAULT 1 COMMENT '是否允许候补:0否 1是',
-    `status` TINYINT NOT NULL DEFAULT 10 COMMENT '活动状态:10草稿 20报名中 30已满 40成团 50流局 60已取消 70已结束',
+    `waitlist_limit` INT NOT NULL DEFAULT 0 COMMENT '候补上限',
+    `status` TINYINT NOT NULL DEFAULT 20 COMMENT '活动状态:10草稿 20待审核 30报名中 40已满 50候补开放 60成团成功 70成团失败 80进行中 90已结束 100已取消',
+    `view_count` BIGINT NOT NULL DEFAULT 0 COMMENT '浏览量',
     `heat_score` INT NOT NULL DEFAULT 0 COMMENT '活动热度',
     `cancel_reason` VARCHAR(255) DEFAULT NULL COMMENT '取消原因',
+    `reviewed_by` BIGINT DEFAULT NULL COMMENT '审核人ID',
+    `reviewed_at` DATETIME(3) DEFAULT NULL COMMENT '审核时间',
+    `review_remark` VARCHAR(255) DEFAULT NULL COMMENT '审核备注',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',
     `created_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建人',
@@ -92,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `activity_tag` (
     `updated_by` BIGINT NOT NULL DEFAULT 0 COMMENT '更新人',
     `deleted` TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除:0否 1是',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_activity_tag` (`activity_id`, `tag_name`),
+    UNIQUE KEY `uk_activity_tag` (`activity_id`, `tag_name`, `deleted`),
     KEY `idx_tag_name` (`tag_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动标签表';
 

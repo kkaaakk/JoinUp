@@ -17,6 +17,11 @@ public enum ErrorCode {
     USER_DISABLED(41002, "User is disabled"),
     USER_NOT_FOUND(41003, "User not found"),
     PASSWORD_CONFIRM_MISMATCH(41004, "Password confirmation does not match"),
+    ACTIVITY_NOT_FOUND(42000, "Activity not found"),
+    ACTIVITY_INVALID_ARGUMENT(42001, "Activity argument is invalid"),
+    ACTIVITY_STATUS_CONFLICT(42002, "Activity status conflict"),
+    ACTIVITY_PERMISSION_DENIED(42003, "Activity permission denied"),
+    ACTIVITY_REVIEW_PERMISSION_DENIED(42004, "Activity review permission denied"),
     INTERNAL_ERROR(50000, "Internal server error");
 
     private final Integer code;

@@ -118,3 +118,25 @@ JoinUp（组个局）是面向校园和社区的线下临时活动组局平台�
 - `docs/phase-4-user-module.md`
 - `joinup-user/src/main/java/com/joinup/user/controller/UserController.java`
 - `joinup-user/src/main/java/com/joinup/user/service/impl/UserServiceImpl.java`
+
+### 第5段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现 `joinup-activity` 模块的活动创建、修改、详情、分页、取消与管理员审核骨架。
+
+已完成项：
+1. `activity / activity_tag` 相关 DTO / VO / Entity / Mapper / Service / Controller
+2. 活动状态枚举与集中式状态流转设计
+3. 发起者权限校验与管理员审核占位校验
+4. 活动详情、分页、取消、审核接口骨架
+5. `waitlist_limit / view_count / reviewed_*` 字段预留接入
+
+影响模块：
+- `joinup-activity`
+- `joinup-common`
+- `joinup-infra`
+
+相关文件：
+- `docs/phase-5-activity-module.md`
+- `joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivityServiceImpl.java`
+- `joinup-activity/src/main/java/com/joinup/activity/domain/ActivityStatusFlow.java`
