@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * 全局错误码定义。
- * 先按模块聚类，后续如果规模变大可以拆为分模块错误码枚举。
+ * <p>
+ * 当前先按模块聚合，便于快速扩展；后续如果错误码规模继续增大，再拆成更细的模块枚举。
+ * </p>
  */
 @Getter
 @RequiredArgsConstructor
@@ -34,6 +36,10 @@ public enum ErrorCode {
     SIGNUP_CANCEL_NOT_ALLOWED(43005, "Signup cancel is not allowed"),
     SIGNUP_EVENT_DISPATCH_FAILED(43006, "Signup event dispatch failed"),
     SIGNUP_CACHE_INITIALIZATION_FAILED(43007, "Signup cache initialization failed"),
+    CREDIT_SCORE_TOO_LOW_FOR_HOT_ACTIVITY(44000, "Credit score is too low for hot activity signup"),
+    CREDIT_SCORE_TOO_LOW_FOR_ACTIVITY_CREATE(44001, "Credit score is too low for activity creation"),
+    CREDIT_MANUAL_ADJUST_INVALID(44002, "Credit manual adjust request is invalid"),
+    CREDIT_PERMISSION_DENIED(44003, "Credit operation permission denied"),
     INTERNAL_ERROR(50000, "Internal server error");
 
     private final Integer code;

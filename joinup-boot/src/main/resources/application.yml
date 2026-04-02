@@ -1,25 +1,25 @@
 server:
-  # 当前阶段默认单机运行，后续可通过 profile 覆盖端口。
+  # 当前阶段默认单机运行，后续可以通过 profile 覆盖端口。
   port: 8080
 
 spring:
   application:
     name: joinup
   datasource:
-    # 本地开发默认连接，部署环境请改为外部配置。
+    # 本地开发默认连接，部署环境请改成外部配置。
     url: jdbc:mysql://127.0.0.1:3306/joinup?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      # Redis 主要承接缓存、幂等和后续报名并发控制。
+      # Redis 主要承接缓存、幂等和报名高并发控制。
       host: 127.0.0.1
       port: 6379
       database: 0
       timeout: 3000
   kafka:
-    # Kafka 用于领域事件与异步通知，当前先保留基础生产/消费配置。
+    # Kafka 用于领域事件和异步通知。
     bootstrap-servers: 127.0.0.1:9092
     producer:
       acks: all
@@ -33,13 +33,13 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 mybatis-plus:
-  # XML Mapper 目录先统一预留，后续复杂查询可直接落地。
+  # XML Mapper 目录统一预留，后续复杂查询可以直接落地。
   mapper-locations: classpath*:/mapper/**/*.xml
   configuration:
     map-underscore-to-camel-case: true
   global-config:
     db-config:
-      # deleted 字段统一走逻辑删除，避免业务代码各自约定。
+      # deleted 字段统一走逻辑删除，避免业务代码重复约定。
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
@@ -82,3 +82,35 @@ joinup:
       scan-lock-lease-seconds: 10
       # 单个活动结算锁自动释放时间，单位秒。
       activity-lock-lease-seconds: 10
+  credit:
+    # 新用户默认信用分，和 user 表默认值保持一致。
+    initial-score: 100
+    # 信用分保护区间，避免异常规则把分数写得过高或过低。
+    min-score: 0
+    max-score: 200
+    # 正常参加活动后的奖励分。
+    attend-bonus: 1
+    # 在允许取消时间内主动取消时的扣分，默认给 0，后续可改成 -1。
+    early-cancel-penalty: 0
+    # 临近活动开始时间取消时的扣分。
+    late-cancel-penalty: -3
+    # 爽约未到场时的扣分。
+    no-show-penalty: -10
+    # 距离活动开始不足多少小时视为“临时取消”。
+    free-cancel-hours-before-start: 24
+    # 热门活动热度阈值。
+    hot-activity-heat-score-threshold: 80
+    # 信用分低于该值时，不允许报名热门活动。
+    hot-activity-signup-min-score: 70
+    # 信用分低于该值时，不允许创建活动。
+    create-activity-min-score: 60
+    # 信用分低于该值时，需要降低候补优先级。
+    waitlist-penalty-min-score: 75
+    # 连续爽约达到该次数时，直接触发限制。
+    consecutive-no-show-limit: 2
+    # 统计连续爽约时，最多回看多少天内的信用行为记录。
+    consecutive-no-show-window-days: 90
+    # 查询信用详情时默认展示的最近记录数。
+    recent-record-limit: 10
+    # 人工调整单次最大绝对值，防止误操作一次改动过大。
+    manual-adjust-max-absolute-delta: 50

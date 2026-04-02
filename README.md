@@ -221,3 +221,26 @@ JoinUp（组个局）是面向校园和社区的线下临时活动组局平台�
 - `joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivitySettlementServiceImpl.java`
 - `joinup-activity/src/main/java/com/joinup/activity/scheduler/ActivitySettlementScheduler.java`
 - `joinup-common/src/main/java/com/joinup/common/event/activity/ActivitySettlementCompletedEvent.java`
+### 第9段（已完成）
+完成时间：2026-04-02
+
+本段目标：实现 `joinup-credit` 用户信用模块，覆盖信用规则、信用变更服务、信用限制校验、用户信用查询与管理员人工调整骨架。
+已完成项：
+1. `joinup-credit` 模块的 DTO / VO / Mapper / Service / Controller / Domain 规则骨架
+2. 用户信用详情查询接口 `GET /api/credit/my`
+3. 管理员人工调整接口骨架 `POST /api/admin/credit/adjust/{userId}`
+4. 信用分变更服务：守约加分、允许时间内取消、临时取消扣分、爽约扣分、人工调整
+5. 信用限制校验：限制报名热门活动、限制创建活动、降低候补优先级
+6. 面向 `joinup-signup / joinup-waitlist / joinup-activity` 的服务衔接点
+7. `joinup.credit.*` 配置项与信用错误码补充
+
+影响模块：
+- `joinup-credit`
+- `joinup-common`
+- `joinup-boot`
+
+相关文件：
+- `docs/phase-9-credit-module.md`
+- `joinup-credit/src/main/java/com/joinup/credit/service/impl/CreditServiceImpl.java`
+- `joinup-credit/src/main/java/com/joinup/credit/domain/CreditRestrictionChecker.java`
+- `joinup-credit/src/main/java/com/joinup/credit/controller/CreditController.java`

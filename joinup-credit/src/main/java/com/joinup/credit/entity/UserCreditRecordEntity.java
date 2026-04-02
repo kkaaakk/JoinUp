@@ -9,7 +9,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * 用户信用变更记录实体。
+ * 用户信用分变更记录实体。
+ * <p>
+ * 这张表承担两类职责：
+ * </p>
+ * <p>
+ * 1. 记录每一次信用分变化的审计轨迹，便于追溯“为什么变成这个分数”。
+ * </p>
+ * <p>
+ * 2. 为后续风控判断提供行为序列，例如统计连续爽约次数、识别人工调整等。
+ * </p>
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,7 +34,7 @@ public class UserCreditRecordEntity extends BaseEntity {
     @TableField("change_type")
     private Integer changeType;
 
-    /** 本次变更分值，可正可负。 */
+    /** 本次变更分值，可正可负，也允许为 0。 */
     @TableField("delta_score")
     private Integer deltaScore;
 
