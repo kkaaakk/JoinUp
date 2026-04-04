@@ -1,5 +1,6 @@
 C:\JoinUp\joinup-common\src\main\java\com\joinup\common\event\activity\ActivitySettlementCompletedEvent.java
 C:\JoinUp\joinup-common\src\main\java\com\joinup\common\kafka\NotifyKafkaConstants.java
+C:\JoinUp\joinup-common\src\main\java\com\joinup\common\constants\JoinUpRedisKeys.java
 C:\JoinUp\joinup-common\src\main\java\com\joinup\common\exception\BusinessException.java
 C:\JoinUp\joinup-common\src\main\java\com\joinup\common\event\activity\ActivityGroupFailedEvent.java
 C:\JoinUp\joinup-common\src\main\java\com\joinup\common\event\waitlist\WaitlistJoinedEvent.java

@@ -1,295 +1,257 @@
 # JoinUp Backend
 
-## 项目说明
-JoinUp（组个局）是面向校园和社区的线下临时活动组局平台后端。
-本仓库采用模块化单体架构，当前阶段优先建设可启动、可扩展的基础骨架。
+## 项目简介
+JoinUp（组个局）是一个面向校园和社区的线下临时活动组局平台后端。
+
+它要解决的不是电商下单，也不是传统预约，而是“临时发起活动、快速抢位、候补补位、成团流局、信用约束、通知触达”这一整套高时效业务闭环。
+
+当前仓库采用：
+1. Java 17
+2. Spring Boot 3.x
+3. Maven 多模块
+4. 模块化单体架构
+
+## 核心业务能力
+1. 用户注册、登录、JWT 鉴权、个人资料维护
+2. 活动创建、编辑、取消、审核、分页查询
+3. 高并发报名抢位、幂等防重、异步落库
+4. 满员后候补排队、正式用户取消后自动补位、超时顺延
+5. 报名截止后的自动成团/流局结算
+6. 信用分变更、低信用限制、后台人工干预
+7. 站内通知、Kafka 事件驱动通知链路
+8. 管理后台审核、举报处理、热门活动监控、风险用户监控、操作日志
+
+## 技术栈
+### 基础框架
+1. Java 17
+2. Spring Boot 3.x
+3. Spring Web
+4. Spring Validation
+5. Spring Security + JWT
+6. Spring Scheduler
+
+### 数据与中间件
+1. MySQL 8.x
+2. Redis
+3. Redisson
+4. Kafka
+5. MyBatis Plus
+
+### 开发效率与测试
+1. Lombok
+2. MapStruct
+3. Knife4j / OpenAPI
+4. JUnit 5
+5. Mockito
+
+## 架构说明
+项目采用模块化单体，而不是微服务。
+
+这样做的原因是：
+1. 业务还在快速演进阶段，单体更利于收敛规则
+2. 报名、候补、信用、通知之间耦合很强，拆太早会增加复杂度
+3. 通过模块边界、领域事件、服务接口先把结构做对，后续再按热点和团队边界拆分更稳
+
+### 分层约定
+每个业务模块统一采用以下分层：
+1. `controller`
+2. `service`
+3. `domain`
+4. `mapper`
+5. `entity`
+6. `dto`
+7. `vo`
+
+## Maven 模块
+### 启动与基础
+1. `joinup-boot`
+   说明：启动模块，装配全项目
+2. `joinup-common`
+   说明：通用返回结构、异常、事件、上下文、常量
+3. `joinup-infra`
+   说明：MySQL、Redis、Kafka、MyBatis Plus、OpenAPI、Security 等基础设施
+
+### 业务模块
+1. `joinup-user`
+   说明：用户、登录、资料、鉴权
+2. `joinup-activity`
+   说明：活动创建、编辑、审核、详情、成团流局
+3. `joinup-signup`
+   说明：高并发报名抢位、取消、异步落库
+4. `joinup-waitlist`
+   说明：候补排队、自动补位、超时顺延、候补查询
+5. `joinup-credit`
+   说明：信用规则、信用分变更、限制校验
+6. `joinup-notify`
+   说明：站内通知、通知事件消费、通知分页
+7. `joinup-admin`
+   说明：后台审核、举报处理、风险监控、操作日志
+
+## 当前代码现状
+### 已完成的核心闭环
+1. 用户认证闭环
+2. 活动创建与审核闭环
+3. 报名抢位主链路
+4. 候补补位闭环
+5. 成团/流局结算闭环
+6. 信用约束骨架
+7. 通知模块骨架与消费入口
+8. 后台治理骨架
+
+### 仍建议继续补强的部分
+1. 业务 Topic 的上游 Producer 全量接入
+2. Testcontainers 端到端集成测试
+3. 正式 RBAC 与更细粒度后台权限
+4. 热门榜单与推荐链路的真实更新任务
+
+## 快速启动
+### 1. 准备依赖
+本项目需要以下中间件：
+1. MySQL 8.x
+2. Redis
+3. Kafka
+
+### 2. 初始化数据库
+先执行：
+1. [joinup_schema_v1.sql](/C:/JoinUp/joinup-infra/src/main/resources/sql/joinup_schema_v1.sql)
+2. [joinup_waitlist_phase7.sql](/C:/JoinUp/joinup-infra/src/main/resources/sql/joinup_waitlist_phase7.sql)
+
+### 3. 检查配置
+配置文件在：
+[application.yml](/C:/JoinUp/joinup-boot/src/main/resources/application.yml)
+
+需要重点确认：
+1. MySQL 地址、账号、密码
+2. Redis 地址
+3. Kafka 地址
+4. JWT 密钥
+
+### 4. 编译项目
+```bash
+mvn -q "-Dmaven.repo.local=.m2" -DskipTests compile
+```
+
+### 5. 启动应用
+启动类在：
+[JoinUpApplication.java](/C:/JoinUp/joinup-boot/src/main/java/com/joinup/boot/JoinUpApplication.java)
+
+## 关键文档索引
+1. [phase-3-database-design.md](/C:/JoinUp/docs/phase-3-database-design.md)
+2. [phase-4-user-module.md](/C:/JoinUp/docs/phase-4-user-module.md)
+3. [phase-5-activity-module.md](/C:/JoinUp/docs/phase-5-activity-module.md)
+4. [phase-6-signup-module.md](/C:/JoinUp/docs/phase-6-signup-module.md)
+5. [phase-7-waitlist-module.md](/C:/JoinUp/docs/phase-7-waitlist-module.md)
+6. [phase-8-activity-settlement.md](/C:/JoinUp/docs/phase-8-activity-settlement.md)
+7. [phase-9-credit-module.md](/C:/JoinUp/docs/phase-9-credit-module.md)
+8. [phase-10-notify-module.md](/C:/JoinUp/docs/phase-10-notify-module.md)
+9. [phase-11-admin-module.md](/C:/JoinUp/docs/phase-11-admin-module.md)
+10. [phase-12-project-wrap-up.md](/C:/JoinUp/docs/phase-12-project-wrap-up.md)
+11. [joinup-project-study-guide.md](/C:/JoinUp/docs/joinup-project-study-guide.md)
+
+## 关键代码入口
+1. 用户模块
+   [UserController.java](/C:/JoinUp/joinup-user/src/main/java/com/joinup/user/controller/UserController.java)
+2. 活动模块
+   [ActivityController.java](/C:/JoinUp/joinup-activity/src/main/java/com/joinup/activity/controller/ActivityController.java)
+3. 报名模块
+   [SignupServiceImpl.java](/C:/JoinUp/joinup-signup/src/main/java/com/joinup/signup/service/impl/SignupServiceImpl.java)
+4. 候补模块
+   [WaitlistPromotionDomainService.java](/C:/JoinUp/joinup-waitlist/src/main/java/com/joinup/waitlist/domain/WaitlistPromotionDomainService.java)
+5. 成团流局模块
+   [ActivitySettlementServiceImpl.java](/C:/JoinUp/joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivitySettlementServiceImpl.java)
+6. 信用模块
+   [CreditServiceImpl.java](/C:/JoinUp/joinup-credit/src/main/java/com/joinup/credit/service/impl/CreditServiceImpl.java)
+7. 通知模块
+   [NotifyServiceImpl.java](/C:/JoinUp/joinup-notify/src/main/java/com/joinup/notify/service/impl/NotifyServiceImpl.java)
+8. 管理后台模块
+   [AdminReportServiceImpl.java](/C:/JoinUp/joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminReportServiceImpl.java)
 
 ## 分段交付记录
-
-### 第1段（已完成）
-完成时间：2026-04-01
-
+### 第1段
 1. 项目整体架构设计
-2. Maven 多模块划分方案
+2. Maven 多模块划分
 3. 模块职责说明
 4. 技术选型说明
-5. 推荐 package 结构
-6. 后续生成代码的分步计划
+5. package 结构建议
+6. 后续分步计划
 
-### 第2段（已完成）
-完成时间：2026-04-01
+### 第2段
+1. 项目骨架
+2. 基础设施层
+3. Spring Security + JWT 骨架
+4. 全局异常与统一返回
+5. Swagger / MyBatis Plus / 审计字段
 
-本段目标：先生成项目骨架与基础设施层，不扩展业务细节。
+### 第3段
+1. 数据库表结构设计
+2. 索引与约束设计
+3. MyBatis Plus Entity 骨架
+4. 枚举字段与逻辑删除设计
 
-已完成项：
-1. Maven 多模块结构（新命名）
-- `joinup-boot`
-- `joinup-common`
-- `joinup-infra`
-- `joinup-user`
-- `joinup-activity`
-- `joinup-signup`
-- `joinup-waitlist`
-- `joinup-credit`
-- `joinup-notify`
-- `joinup-admin`
+### 第4段
+1. `joinup-user`
+2. 用户注册、登录、鉴权
+3. 个人资料查询与修改
+4. 信用分查询
 
-2. 父工程与各子模块 `pom.xml`
-3. 启动类与 `application.yml` 模板
-4. MySQL / Redis / Kafka 配置骨架
-5. Spring Security + JWT 认证骨架
-6. 全局异常处理
-7. 统一返回结构 `Result<T>`
-8. 基础枚举与常量骨架
-9. Swagger / Knife4j 配置
-10. MyBatis Plus 配置
-11. 通用审计字段基类（`created_at`、`updated_at`、`deleted` 等）
-12. 新增模块分层目录骨架（`controller/service/domain/mapper/entity/dto/vo`）
+### 第5段
+1. `joinup-activity`
+2. 活动创建、修改、取消、详情、分页
+3. 管理员审核接口
+4. 活动状态流转骨架
 
-补充说明：
-- 旧目录（`joinup-app`、`joinup-infrastructure`、`joinup-module-*`）已删除。
-- 目前 parent 聚合只包含新模块命名。
+### 第6段
+1. `joinup-signup`
+2. Redis 库存缓存
+3. Lua 原子扣减
+4. Kafka 异步落库
+5. 幂等控制与结果查询
 
-## 当前模块清单（生效）
-- joinup-common
-- joinup-infra
-- joinup-user
-- joinup-activity
-- joinup-signup
-- joinup-waitlist
-- joinup-credit
-- joinup-notify
-- joinup-admin
-- joinup-boot
+### 第7段
+1. `joinup-waitlist`
+2. 候补排队
+3. 正式取消后自动补位
+4. 超时未确认顺延
+5. 候补查询接口
 
-## 后续约定
-从现在开始，每完成一段都会同步更新本 README 的“分段交付记录”，至少包含：
-1. 段号
-2. 完成时间
-3. 本段目标
-4. 已完成内容
-5. 影响模块
-6. 备注（如迁移、兼容、已知限制）
+### 第8段
+1. 成团 / 流局结算
+2. 定时任务扫描
+3. 状态日志写入
+4. 分布式锁防重
+5. 结算事件发送
 
-### 第3段（已完成）
-完成时间：2026-04-01
+### 第9段
+1. `joinup-credit`
+2. 信用分变更规则
+3. 低信用限制校验
+4. 用户信用查询
+5. 管理员人工调整骨架
 
-本段目标：生成数据库设计与实体骨架，先不扩展业务实现。
+### 第10段
+1. `joinup-notify`
+2. 通知消息落库
+3. 业务 Topic 与通知发送命令
+4. 通知分页和已读接口
 
-已完成项：
-1. 11 张核心业务表 MySQL DDL（含关键约束与索引）
-2. 每张表字段说明与索引设计建议文档
-3. MyBatis Plus Entity 骨架（按模块落位）
-4. 枚举字段设计与对应 Enum 骨架
-5. 统一逻辑删除与审计字段方案说明
+### 第11段
+1. `joinup-admin`
+2. 举报处理
+3. 热门活动监控
+4. 风险用户监控
+5. 操作日志查询
+6. RBAC 权限编码预留
 
-关键约束已覆盖：
-- `activity_signup(activity_id, user_id)` 唯一索引
-- `activity_waitlist(activity_id, user_id)` 唯一索引
-- `activity_waitlist(activity_id, queue_no)` 唯一索引
-- `user_profile(user_id)` 唯一索引
+### 第12段
+1. Redis Key 汇总
+2. Kafka 事件链路汇总
+3. 高并发报名、候补补位、成团流局时序图
+4. 单元测试与集成测试建议
+5. 接口文档组织建议
+6. README 初稿
+7. 后续扩展能力建议
 
-影响模块：
-- joinup-infra（SQL）
-- joinup-user / joinup-activity / joinup-signup / joinup-waitlist / joinup-credit / joinup-notify / joinup-admin（Entity + Enum）
-
-相关文件：
-- `joinup-infra/src/main/resources/sql/joinup_schema_v1.sql`
-- `docs/phase-3-database-design.md`
-
-### 第4段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现 `joinup-user` 模块的注册、登录、JWT 鉴权、个人资料与信用分接口。
-
-已完成项：
-1. `joinup-user` 的 DTO / VO / Mapper / Service / Controller
-2. 用户注册、登录、当前资料查询、资料修改、信用分查询
-3. 基于 JWT 的登录认证链路接入
-4. Spring Security 放行路径调整到 `/api/user/register` 与 `/api/user/login`
-5. 密码加密存储与用户状态校验
-
-影响模块：
-- `joinup-user`
-- `joinup-infra`
-- `joinup-common`
-
-相关文件：
-- `docs/phase-4-user-module.md`
-- `joinup-user/src/main/java/com/joinup/user/controller/UserController.java`
-- `joinup-user/src/main/java/com/joinup/user/service/impl/UserServiceImpl.java`
-
-### 第5段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现 `joinup-activity` 模块的活动创建、修改、详情、分页、取消与管理员审核骨架。
-
-已完成项：
-1. `activity / activity_tag` 相关 DTO / VO / Entity / Mapper / Service / Controller
-2. 活动状态枚举与集中式状态流转设计
-3. 发起者权限校验与管理员审核占位校验
-4. 活动详情、分页、取消、审核接口骨架
-5. `waitlist_limit / view_count / reviewed_*` 字段预留接入
-
-影响模块：
-- `joinup-activity`
-- `joinup-common`
-- `joinup-infra`
-
-相关文件：
-- `docs/phase-5-activity-module.md`
-- `joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivityServiceImpl.java`
-- `joinup-activity/src/main/java/com/joinup/activity/domain/ActivityStatusFlow.java`
-补充约定：后续每一段业务交付默认同步补充必要代码注释，但补注释本身不单独占用新的段号。
-### 第6段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现 `joinup-signup` 高并发报名抢位模块，覆盖 Redis 名额缓存、Lua 原子扣减、幂等控制、Kafka 异步写库、报名结果查询与必要补偿。
-已完成项：
-1. `POST /api/signup/apply/{activityId}` 报名接口，正式名额不足时自动切候补逻辑
-2. `POST /api/signup/cancel/{activityId}` 取消接口骨架，异步取消并回补 Redis 名额
-3. `GET /api/signup/my` 与 `GET /api/signup/activity/{activityId}` 结果查询接口
-4. Redis Key 设计与活动快照缓存初始化
-5. `signup_apply.lua` 原子报名脚本与 `signup_compensate.lua` 补偿脚本
-6. Kafka 报名命令生产者、消费者与异步落库处理
-7. MySQL 报名表 / 候补表写入逻辑与数据库唯一约束兜底
-8. 不可恢复失败补偿、瞬时失败重试保留点与后续对账扩展说明
-
-影响模块：
-- `joinup-signup`
-- `joinup-common`
-- `joinup-waitlist`
-
-相关文件：
-- `docs/phase-6-signup-module.md`
-- `joinup-signup/src/main/java/com/joinup/signup/service/impl/SignupServiceImpl.java`
-- `joinup-signup/src/main/java/com/joinup/signup/domain/SignupActivityCacheService.java`
-- `joinup-signup/src/main/resources/lua/signup_apply.lua`
-### 第7段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现 `joinup-waitlist` 候补模块，打通“正式名额释放 -> 候补自动补位 -> 补位通知 -> 超时顺延”的闭环。
-已完成项：
-1. `joinup-waitlist` 模块的 Entity / Enum / Mapper / Service / Controller / Redis 队列服务 / 领域服务 / 事件监听 / 定时任务骨架
-2. 候补 Redis 结构设计落地：活动候补队列 ZSet、候补状态 Hash、全局补位超时 ZSet、活动级补位锁 Key
-3. 正式席位释放后按先到先得推进下一位候补，并使用 Redisson 锁避免并发补位冲突
-4. 候补补位提醒通知落表到 `notify_message`
-5. 候补补位超时扫描与顺延机制落地
-6. `joinup-signup` 与 `joinup-waitlist` 通过领域事件衔接：
-- `WaitlistJoinedEvent`
-- `WaitlistCanceledEvent`
-- `FormalSignupCanceledEvent`
-- `WaitlistPromotionOfferedEvent`
-- `WaitlistPromotionExpiredEvent`
-7. 报名模块已补齐候补补位占位 / 超时释放正式席位的联动逻辑
-
-影响模块：
-- `joinup-waitlist`
-- `joinup-signup`
-- `joinup-common`
-- `joinup-notify`
-- `joinup-boot`
-- `joinup-infra`
-
-相关文件：
-- `docs/phase-7-waitlist-module.md`
-- `joinup-waitlist/src/main/java/com/joinup/waitlist/domain/WaitlistPromotionDomainService.java`
-- `joinup-waitlist/src/main/java/com/joinup/waitlist/domain/WaitlistRedisQueueService.java`
-- `joinup-signup/src/main/java/com/joinup/signup/domain/WaitlistPromotionSignupCoordinator.java`
-- `joinup-infra/src/main/resources/sql/joinup_waitlist_phase7.sql`
-
-### 第8段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现活动报名截止后的自动成团 / 流局判定、状态日志写入、分布式锁调度控制以及事务后 Kafka 事件发送骨架。
-已完成项：
-1. `joinup-activity` 内新增成团 / 流局领域规则、状态日志领域服务、分布式锁服务、定时扫描任务、结算服务实现
-2. 定时扫描到报名截止时间已到且状态仍为 `SIGNUP_OPEN / FULL / WAITLIST_OPEN` 的活动
-3. 根据 `current_participants >= min_group_size` 自动判定 `GROUP_SUCCESS / GROUP_FAILED`
-4. 结算后统一写入 `activity_status_log`
-5. 使用 Redisson 全局扫描锁 + 活动级锁避免多实例重复执行
-6. 通过 `ActivitySettlementCompletedEvent` 在事务提交后发送 Kafka 结算结果事件
-7. 新增活动结算配置项与结算扫描查询方法
-
-影响模块：
-- `joinup-activity`
-- `joinup-common`
-- `joinup-boot`
-
-相关文件：
-- `docs/phase-8-activity-settlement.md`
-- `joinup-activity/src/main/java/com/joinup/activity/service/impl/ActivitySettlementServiceImpl.java`
-- `joinup-activity/src/main/java/com/joinup/activity/scheduler/ActivitySettlementScheduler.java`
-- `joinup-common/src/main/java/com/joinup/common/event/activity/ActivitySettlementCompletedEvent.java`
-### 第9段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现 `joinup-credit` 用户信用模块，覆盖信用规则、信用变更服务、信用限制校验、用户信用查询与管理员人工调整骨架。
-已完成项：
-1. `joinup-credit` 模块的 DTO / VO / Mapper / Service / Controller / Domain 规则骨架
-2. 用户信用详情查询接口 `GET /api/credit/my`
-3. 管理员人工调整接口骨架 `POST /api/admin/credit/adjust/{userId}`
-4. 信用分变更服务：守约加分、允许时间内取消、临时取消扣分、爽约扣分、人工调整
-5. 信用限制校验：限制报名热门活动、限制创建活动、降低候补优先级
-6. 面向 `joinup-signup / joinup-waitlist / joinup-activity` 的服务衔接点
-7. `joinup.credit.*` 配置项与信用错误码补充
-
-影响模块：
-- `joinup-credit`
-- `joinup-common`
-- `joinup-boot`
-
-相关文件：
-- `docs/phase-9-credit-module.md`
-- `joinup-credit/src/main/java/com/joinup/credit/service/impl/CreditServiceImpl.java`
-- `joinup-credit/src/main/java/com/joinup/credit/domain/CreditRestrictionChecker.java`
-- `joinup-credit/src/main/java/com/joinup/credit/controller/CreditController.java`
-### 第10段（已完成）
-完成时间：2026-04-02
-
-本段目标：实现 `joinup-notify` 通知模块，并补齐基于 Kafka 的事件驱动通知设计。
-已完成项：
-1. `notify_message` 对应的 Entity / Mapper / 状态枚举 / 渠道枚举 / 通知类型枚举
-2. 通知分页接口 `GET /api/notify/page`
-3. 通知已读接口 `POST /api/notify/read/{id}`
-4. `signup-created / signup-canceled / waitlist-promoted / activity-group-success / activity-group-failed / credit-changed / notify-send` Kafka 主题常量与事件载荷
-5. 上游业务事件消费者、统一通知发送命令生产者、通知发送命令消费者骨架
-6. 站内信落库逻辑与短信 / 邮件 / 小程序通知发送器预留接口
-7. 通知模块阶段文档 `docs/phase-10-notify-module.md`
-
-影响模块：
-- `joinup-notify`
-- `joinup-common`
-- `joinup-waitlist`（兼容旧通知枚举名引用）
-
-相关文件：
-- `docs/phase-10-notify-module.md`
-- `joinup-notify/src/main/java/com/joinup/notify/service/impl/NotifyServiceImpl.java`
-- `joinup-notify/src/main/java/com/joinup/notify/consumer/NotifyBusinessEventConsumer.java`
-- `joinup-notify/src/main/java/com/joinup/notify/producer/NotifySendEventProducer.java`
-### 第11段（已完成）
-完成时间：2026-04-03
-
-本段目标：实现 `joinup-admin` 管理后台模块，覆盖活动审核复用、举报处理、异常活动下架、用户信用人工干预、风险用户监控、热门活动监控与操作日志分页查询。
-已完成项：
-1. 复用第5段已存在的活动审核接口 `POST /api/admin/activity/review/{id}`，未重复实现
-2. 新增举报分页接口 `GET /api/admin/report/page`
-3. 新增举报处理接口 `POST /api/admin/report/handle/{id}`
-4. 新增后台统一信用调整接口 `POST /api/admin/user/credit/adjust`
-5. 新增热门活动监控接口 `GET /api/admin/activity/hot/page`
-6. 新增风险用户监控接口 `GET /api/admin/user/risk/page`
-7. 新增操作日志分页接口 `GET /api/admin/log/page`
-8. 新增 `AdminPermissionChecker` 与 `AdminPermissionConstants`，预留 RBAC 权限编码
-9. 新增举报处理、用户治理、热门活动监控、操作日志对应的 Mapper / Service / Controller 骨架
-10. 举报处理链路已支持“更新举报状态 + 可选下架活动 + 可选禁用被举报用户 + 写入操作日志”
-
-影响模块：
-- `joinup-admin`
-- `joinup-common`
-
-相关文件：
-- `docs/phase-11-admin-module.md`
-- `joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminReportServiceImpl.java`
-- `joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminUserServiceImpl.java`
-- `joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminMonitorServiceImpl.java`
-- `joinup-admin/src/main/java/com/joinup/admin/service/impl/OperationLogServiceImpl.java`
+## 后续建议
+1. 优先把业务 Topic 的 Producer 真正补齐
+2. 再补 Testcontainers 集成测试
+3. 最后再做实时能力、推荐、聊天室、地图、海报生成等扩展
