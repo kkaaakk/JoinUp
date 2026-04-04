@@ -43,6 +43,9 @@ public enum ErrorCode {
     NOTIFY_MESSAGE_NOT_FOUND(45000, "Notify message not found"),
     NOTIFY_CHANNEL_NOT_SUPPORTED(45001, "Notify channel is not supported"),
     NOTIFY_EVENT_DISPATCH_FAILED(45002, "Notify event dispatch failed"),
+    ADMIN_PERMISSION_DENIED(46000, "Admin permission denied"),
+    ADMIN_REPORT_NOT_FOUND(46001, "Admin report record not found"),
+    ADMIN_REPORT_STATUS_CONFLICT(46002, "Admin report status conflict"),
     INTERNAL_ERROR(50000, "Internal server error");
 
     private final Integer code;

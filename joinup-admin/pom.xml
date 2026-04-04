@@ -25,6 +25,21 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.joinup</groupId>
+            <artifactId>joinup-activity</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.joinup</groupId>
+            <artifactId>joinup-user</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.joinup</groupId>
+            <artifactId>joinup-credit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

@@ -267,3 +267,29 @@ JoinUp（组个局）是面向校园和社区的线下临时活动组局平台�
 - `joinup-notify/src/main/java/com/joinup/notify/service/impl/NotifyServiceImpl.java`
 - `joinup-notify/src/main/java/com/joinup/notify/consumer/NotifyBusinessEventConsumer.java`
 - `joinup-notify/src/main/java/com/joinup/notify/producer/NotifySendEventProducer.java`
+### 第11段（已完成）
+完成时间：2026-04-03
+
+本段目标：实现 `joinup-admin` 管理后台模块，覆盖活动审核复用、举报处理、异常活动下架、用户信用人工干预、风险用户监控、热门活动监控与操作日志分页查询。
+已完成项：
+1. 复用第5段已存在的活动审核接口 `POST /api/admin/activity/review/{id}`，未重复实现
+2. 新增举报分页接口 `GET /api/admin/report/page`
+3. 新增举报处理接口 `POST /api/admin/report/handle/{id}`
+4. 新增后台统一信用调整接口 `POST /api/admin/user/credit/adjust`
+5. 新增热门活动监控接口 `GET /api/admin/activity/hot/page`
+6. 新增风险用户监控接口 `GET /api/admin/user/risk/page`
+7. 新增操作日志分页接口 `GET /api/admin/log/page`
+8. 新增 `AdminPermissionChecker` 与 `AdminPermissionConstants`，预留 RBAC 权限编码
+9. 新增举报处理、用户治理、热门活动监控、操作日志对应的 Mapper / Service / Controller 骨架
+10. 举报处理链路已支持“更新举报状态 + 可选下架活动 + 可选禁用被举报用户 + 写入操作日志”
+
+影响模块：
+- `joinup-admin`
+- `joinup-common`
+
+相关文件：
+- `docs/phase-11-admin-module.md`
+- `joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminReportServiceImpl.java`
+- `joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminUserServiceImpl.java`
+- `joinup-admin/src/main/java/com/joinup/admin/service/impl/AdminMonitorServiceImpl.java`
+- `joinup-admin/src/main/java/com/joinup/admin/service/impl/OperationLogServiceImpl.java`
