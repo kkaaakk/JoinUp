@@ -1,2 +1,2 @@
-﻿package com.joinup.admin.entity;
+package com.joinup.admin.entity;
 

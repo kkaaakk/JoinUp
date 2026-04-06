@@ -1,2 +1,2 @@
-﻿package com.joinup.notify.dto;
+package com.joinup.notify.dto;
 

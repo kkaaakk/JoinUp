@@ -1,2 +1,2 @@
-﻿package com.joinup.notify.entity;
+package com.joinup.notify.entity;
 

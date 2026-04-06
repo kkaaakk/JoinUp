@@ -1,1 +1,1 @@
-﻿package com.joinup.user.enums;
+package com.joinup.user.enums;

@@ -1,2 +1,2 @@
-﻿package com.joinup.waitlist.domain;
+package com.joinup.waitlist.domain;
 

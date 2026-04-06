@@ -1,4 +1,4 @@
-﻿package com.joinup.infrastructure.security;
+package com.joinup.infrastructure.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.joinup.common.exception.ErrorCode;
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 未认证请求的统一返回入口。
+ */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -26,6 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
+        // 与统一 Result 结构保持一致，方便前端直接按 code 处理。
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

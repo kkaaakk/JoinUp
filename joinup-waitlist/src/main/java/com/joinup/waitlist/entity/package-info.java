@@ -1,2 +1,2 @@
-﻿package com.joinup.waitlist.entity;
+package com.joinup.waitlist.entity;
 

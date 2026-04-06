@@ -1,2 +1,2 @@
-﻿package com.joinup.waitlist.controller;
+package com.joinup.waitlist.controller;
 

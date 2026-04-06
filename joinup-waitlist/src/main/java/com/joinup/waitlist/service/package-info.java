@@ -1,2 +1,2 @@
-﻿package com.joinup.waitlist.service;
+package com.joinup.waitlist.service;
 

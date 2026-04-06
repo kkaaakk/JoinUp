@@ -1,4 +1,4 @@
-﻿package com.joinup.common.enums;
+package com.joinup.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

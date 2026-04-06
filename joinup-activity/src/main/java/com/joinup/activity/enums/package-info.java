@@ -1,1 +1,1 @@
-﻿package com.joinup.activity.enums;
+package com.joinup.activity.enums;

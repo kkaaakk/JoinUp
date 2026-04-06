@@ -1,2 +1,2 @@
-﻿package com.joinup.admin.domain;
+package com.joinup.admin.domain;
 

@@ -1,2 +1,2 @@
-﻿package com.joinup.notify.domain;
+package com.joinup.notify.domain;
 

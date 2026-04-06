@@ -1,4 +1,4 @@
-﻿package com.joinup.infrastructure.security;
+package com.joinup.infrastructure.security;
 
 import com.joinup.common.constants.SecurityConstants;
 import com.joinup.common.context.LoginUser;
@@ -16,6 +16,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Collections;
 
+/**
+ * JWT 鉴权过滤器。
+ * 从请求头提取 Bearer Token，校验后把 LoginUser 放入 SecurityContext。
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -30,11 +34,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader(SecurityConstants.AUTHORIZATION_HEADER);
-        if (authorization != null && authorization.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null
+                && authorization != null
+                && authorization.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+            // 只有在当前上下文还未认证时才尝试解析，避免重复覆盖已认证用户。
             String token = authorization.substring(SecurityConstants.TOKEN_PREFIX.length());
             if (jwtTokenProvider.validateToken(token)) {
-                Long userId = jwtTokenProvider.parseUserId(token);
-                LoginUser loginUser = LoginUser.builder().userId(userId).build();
+                LoginUser loginUser = jwtTokenProvider.parseLoginUser(token);
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 loginUser,

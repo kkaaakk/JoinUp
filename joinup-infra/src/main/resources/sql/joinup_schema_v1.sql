@@ -1,9 +1,10 @@
-﻿-- JoinUp Phase 3 Database Schema
+-- JoinUp Phase 3 Database Schema
 -- MySQL 8.x
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- 用户主表，承接认证、信用分和账号状态等核心字段。
 CREATE TABLE IF NOT EXISTS `user` (
     `id` BIGINT NOT NULL COMMENT '用户ID',
     `username` VARCHAR(64) NOT NULL COMMENT '用户名',
@@ -27,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     KEY `idx_user_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户表';
 
+-- 用户资料拆表，避免登录链路被低频展示字段拖慢。
 CREATE TABLE IF NOT EXISTS `user_profile` (
     `id` BIGINT NOT NULL COMMENT '资料ID',
     `user_id` BIGINT NOT NULL COMMENT '用户ID',
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `user_profile` (
     KEY `idx_profile_school` (`school_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户资料表';
 
+-- 活动主表，覆盖创建、审核、报名、成团和结束等完整生命周期。
 CREATE TABLE IF NOT EXISTS `activity` (
     `id` BIGINT NOT NULL COMMENT '活动ID',
     `organizer_id` BIGINT NOT NULL COMMENT '发起人ID',
@@ -64,9 +67,14 @@ CREATE TABLE IF NOT EXISTS `activity` (
     `current_participants` INT NOT NULL DEFAULT 0 COMMENT '当前确认人数',
     `waitlist_count` INT NOT NULL DEFAULT 0 COMMENT '候补人数',
     `allow_waitlist` TINYINT NOT NULL DEFAULT 1 COMMENT '是否允许候补:0否 1是',
-    `status` TINYINT NOT NULL DEFAULT 10 COMMENT '活动状态:10草稿 20报名中 30已满 40成团 50流局 60已取消 70已结束',
+    `waitlist_limit` INT NOT NULL DEFAULT 0 COMMENT '候补上限',
+    `status` TINYINT NOT NULL DEFAULT 20 COMMENT '活动状态:10草稿 20待审核 30报名中 40已满 50候补开放 60成团成功 70成团失败 80进行中 90已结束 100已取消',
+    `view_count` BIGINT NOT NULL DEFAULT 0 COMMENT '浏览量',
     `heat_score` INT NOT NULL DEFAULT 0 COMMENT '活动热度',
     `cancel_reason` VARCHAR(255) DEFAULT NULL COMMENT '取消原因',
+    `reviewed_by` BIGINT DEFAULT NULL COMMENT '审核人ID',
+    `reviewed_at` DATETIME(3) DEFAULT NULL COMMENT '审核时间',
+    `review_remark` VARCHAR(255) DEFAULT NULL COMMENT '审核备注',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',
     `created_by` BIGINT NOT NULL DEFAULT 0 COMMENT '创建人',
@@ -81,6 +89,7 @@ CREATE TABLE IF NOT EXISTS `activity` (
     KEY `idx_activity_category_status` (`category`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动表';
 
+-- 标签独立建表，便于后续做搜索、推荐和活动运营。
 CREATE TABLE IF NOT EXISTS `activity_tag` (
     `id` BIGINT NOT NULL COMMENT '标签ID',
     `activity_id` BIGINT NOT NULL COMMENT '活动ID',
@@ -92,10 +101,11 @@ CREATE TABLE IF NOT EXISTS `activity_tag` (
     `updated_by` BIGINT NOT NULL DEFAULT 0 COMMENT '更新人',
     `deleted` TINYINT NOT NULL DEFAULT 0 COMMENT '逻辑删除:0否 1是',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_activity_tag` (`activity_id`, `tag_name`),
+    UNIQUE KEY `uk_activity_tag` (`activity_id`, `tag_name`, `deleted`),
     KEY `idx_tag_name` (`tag_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动标签表';
 
+-- 报名表使用 activity_id + user_id 唯一索引兜住重复报名。
 CREATE TABLE IF NOT EXISTS `activity_signup` (
     `id` BIGINT NOT NULL COMMENT '报名ID',
     `activity_id` BIGINT NOT NULL COMMENT '活动ID',
@@ -118,6 +128,7 @@ CREATE TABLE IF NOT EXISTS `activity_signup` (
     KEY `idx_signup_time` (`signup_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='报名表';
 
+-- 候补表同时约束用户唯一和顺位唯一，便于自动补位按序推进。
 CREATE TABLE IF NOT EXISTS `activity_waitlist` (
     `id` BIGINT NOT NULL COMMENT '候补ID',
     `activity_id` BIGINT NOT NULL COMMENT '活动ID',
@@ -140,6 +151,7 @@ CREATE TABLE IF NOT EXISTS `activity_waitlist` (
     KEY `idx_waitlist_user_status` (`user_id`, `status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='候补表';
 
+-- 状态日志表保留每次流转快照，方便追踪审核、取消和成团过程。
 CREATE TABLE IF NOT EXISTS `activity_status_log` (
     `id` BIGINT NOT NULL COMMENT '日志ID',
     `activity_id` BIGINT NOT NULL COMMENT '活动ID',
@@ -158,6 +170,7 @@ CREATE TABLE IF NOT EXISTS `activity_status_log` (
     KEY `idx_activity_status_log_to_status` (`to_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动状态日志表';
 
+-- 信用记录保留 before / after 快照，避免后面只能看到分值差量。
 CREATE TABLE IF NOT EXISTS `user_credit_record` (
     `id` BIGINT NOT NULL COMMENT '信用记录ID',
     `user_id` BIGINT NOT NULL COMMENT '用户ID',
@@ -179,6 +192,7 @@ CREATE TABLE IF NOT EXISTS `user_credit_record` (
     KEY `idx_credit_related_activity` (`related_activity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户信用记录表';
 
+-- 通知表同时预留站内信、短信和邮件等多渠道投递能力。
 CREATE TABLE IF NOT EXISTS `notify_message` (
     `id` BIGINT NOT NULL COMMENT '通知ID',
     `user_id` BIGINT NOT NULL COMMENT '接收用户ID',
@@ -203,6 +217,7 @@ CREATE TABLE IF NOT EXISTS `notify_message` (
     KEY `idx_notify_biz` (`biz_type`, `biz_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='通知消息表';
 
+-- 举报表承接治理闭环，保留证据、处理人和处理结果。
 CREATE TABLE IF NOT EXISTS `activity_report` (
     `id` BIGINT NOT NULL COMMENT '举报ID',
     `activity_id` BIGINT NOT NULL COMMENT '活动ID',
@@ -227,6 +242,7 @@ CREATE TABLE IF NOT EXISTS `activity_report` (
     KEY `idx_report_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='活动举报表';
 
+-- 操作日志表用于后台审计、问题排查与风控分析。
 CREATE TABLE IF NOT EXISTS `operation_log` (
     `id` BIGINT NOT NULL COMMENT '日志ID',
     `operator_id` BIGINT DEFAULT NULL COMMENT '操作人ID',

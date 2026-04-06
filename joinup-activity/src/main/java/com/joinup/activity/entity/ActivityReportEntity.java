@@ -1,4 +1,4 @@
-﻿package com.joinup.activity.entity;
+package com.joinup.activity.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,6 +10,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * 活动举报实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("activity_report")

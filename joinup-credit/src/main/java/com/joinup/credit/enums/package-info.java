@@ -1,1 +1,1 @@
-﻿package com.joinup.credit.enums;
+package com.joinup.credit.enums;

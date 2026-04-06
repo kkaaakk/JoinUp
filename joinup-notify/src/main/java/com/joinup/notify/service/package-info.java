@@ -1,2 +1,2 @@
-﻿package com.joinup.notify.service;
+package com.joinup.notify.service;
 

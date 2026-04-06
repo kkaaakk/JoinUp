@@ -1,4 +1,4 @@
-﻿# JoinUp 第3段：数据库设计与实体骨架
+# JoinUp 第3段：数据库设计与实体骨架
 
 ## 1. 建表 SQL
 - 文件位置：`joinup-infra/src/main/resources/sql/joinup_schema_v1.sql`
@@ -64,9 +64,12 @@
 | current_participants | int | 当前报名人数 |
 | waitlist_count | int | 候补人数 |
 | allow_waitlist | tinyint | 是否允许候补 |
+| waitlist_limit | int | 候补上限 |
 | status | tinyint | 活动状态 |
+| view_count | bigint | 浏览量 |
 | heat_score | int | 活动热度 |
 | cancel_reason | varchar(255) | 取消原因 |
+| reviewed_by/reviewed_at/review_remark | bigint/datetime/varchar | 审核信息 |
 | created_at/updated_at/created_by/updated_by/deleted/version | - | 审计、逻辑删除、乐观锁 |
 
 ### 2.4 `activity_tag`
@@ -194,7 +197,7 @@
 2. 候补去重：`activity_waitlist(activity_id, user_id)` 唯一。
 3. 候补顺位唯一：`activity_waitlist(activity_id, queue_no)` 唯一。
 4. 用户资料一对一：`user_profile(user_id)` 唯一。
-5. 活动标签去重：`activity_tag(activity_id, tag_name)` 唯一。
+5. 活动标签去重：`activity_tag(activity_id, tag_name, deleted)` 唯一。
 
 ## 5. 枚举字段设计建议
 - 推荐使用 `tinyint/int` 存储枚举编码，Java 端使用 Enum 管理：

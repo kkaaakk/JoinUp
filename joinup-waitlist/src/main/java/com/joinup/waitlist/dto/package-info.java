@@ -1,2 +1,2 @@
-﻿package com.joinup.waitlist.dto;
+package com.joinup.waitlist.dto;
 

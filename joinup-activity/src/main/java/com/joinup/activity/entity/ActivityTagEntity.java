@@ -1,4 +1,4 @@
-﻿package com.joinup.activity.entity;
+package com.joinup.activity.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -8,6 +8,9 @@ import com.joinup.common.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ * 活动标签实体。
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("activity_tag")

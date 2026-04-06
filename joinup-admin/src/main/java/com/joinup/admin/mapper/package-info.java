@@ -1,2 +1,2 @@
-﻿package com.joinup.admin.mapper;
+package com.joinup.admin.mapper;
 

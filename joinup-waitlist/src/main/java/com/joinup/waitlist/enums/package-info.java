@@ -1,1 +1,1 @@
-﻿package com.joinup.waitlist.enums;
+package com.joinup.waitlist.enums;
